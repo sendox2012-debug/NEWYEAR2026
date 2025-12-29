@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- Ссылка на иконку оставлена, если нужно сменить на 2026, замените URL в href -->
+     <link rel="shortcut icon" href="https://avatars.mds.yandex.net/i?id=1ebf5d7c7d1e641df5590b9faa92f6d6f23b557a-5025855-images-thumbs&n=13" type="image/x-icon">
+    <title>New Year 2026 🎄</title>
+    <style>
+        #video-bg {
+            position: fixed;
+            top: 0; left: 0;
+            min-width: 100%; min-height: 100%;
+            z-index: -2;
+            object-fit: cover;
+            filter: brightness(0.5) contrast(1.1);
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        .lang-box {
+            position: absolute; top: 20px; right: 20px; z-index: 100;
+        }
+        .l-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid white;
+            color: white; padding: 6px 12px; cursor: pointer; border-radius: 8px;
+            margin-left: 5px; font-weight: bold; transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .l-btn.active { background: #e74c3c; border-color: #e74c3c; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 40px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            max-width: 400px; z-index: 10;
+        }
+
+        .main-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        h1 { font-size: 3.5rem; margin: 0; text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+        p { font-size: 1.2rem; opacity: 0.9; margin: 20px 0; min-height: 3em; }
+
+        .btn {
+            background: #e74c3c; color: white; border: none;
+            padding: 15px 30px; border-radius: 50px;
+            font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; transition: 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        .btn:hover { background: #ff5e4d; transform: scale(1.05); }
+
+        .snowflake {
+            position: absolute; top: -10px; background: white;
+            border-radius: 50%; opacity: 0.8; pointer-events: none;
+            animation: fall linear infinite;
+        }
+        @keyframes fall { to { transform: translateY(105vh) translateX(30px); } }
+    </style>
+</head>
+<body onclick="initAudio()">
+
+    <video id="video-bg" autoplay muted loop playsinline>
+        <source src="видос.mp4" type="video/mp4">
+    </video>
+
+    <!-- Аудио файлы -->
+    <audio id="music-last-christmas" loop>
+        <source src="last_christmas.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="music-celebration" loop>
+        <source src="стоны.ogg" type="audio/mpeg">
+    </audio>
+
+    <div class="lang-box">
+        <button class="l-btn active" onclick="changeLang('ru', this)">RU</button>
+        <button class="l-btn" onclick="changeLang('en', this)">EN</button>
+    </div>
+
+    <div class="glass-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmUryfQdPa5m05d1ra5hZezmG6CFvdmAqNfA&s" alt="Icon" class="main-icon">
+        
+        <h1 id="t-year">2026</h1>
+        <p id="t-desc">Пусть 2026 год принесет тебе море счастья и крутых моментов!</p>
+        <button id="t-btn" class="btn" onclick="startEvent(event)">Запустить 2026</button>
+    </div>
+
+    <div id="snow-container"></div>
+
+    <script>
+        let currentLang = 'ru';
+        let isStarted = false;
+        let audioUnlocked = false;
+
+        const translations = {
+            ru: { 
+                desc: "Пусть 2026 год принесет тебе море счастья и крутых моментов!", 
+                btn: "Запустить праздник", 
+                success: "С Новым 2026 Годом! 🎉" 
+            },
+            en: { 
+                desc: "May 2026 bring you oceans of happiness!", 
+                btn: "Start 2026 Celebration", 
+                success: "Happy New Year 2026! 🎉" 
+            }
+        };
+
+        // Запуск фона при первом клике (требование браузеров 2026)
+        function initAudio() {
+            if (!audioUnlocked && !isStarted) {
+                const bg = document.getElementById('music-last-christmas');
+                bg.play().then(() => {
+                    audioUnlocked = true;
+                }).catch(e => console.log("Нужен клик для звука"));
+            }
+        }
+
+        function changeLang(lang, element) {
+            currentLang = lang;
+            document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('t-desc').innerText = translations[lang].desc;
+            document.getElementById('t-btn').innerText = isStarted ? translations[lang].success : translations[lang].btn;
+        }
+
+        function startEvent(e) {
+            e.stopPropagation(); 
+            isStarted = true;
+
+            const bg = document.getElementById('music-last-christmas');
+            bg.pause();
+            bg.currentTime = 0;
+
+            const celebration = document.getElementById('music-celebration');
+            celebration.play().catch(err => console.log("Файл не найден"));
+
+            const btn = document.getElementById('t-btn');
+            btn.innerText = translations[currentLang].success;
+            btn.style.background = "#2ecc71";
+            btn.style.boxShadow = "0 5px 15px rgba(46, 204, 113, 0.4)";
+        }
+
+        function createSnow() {
+            const container = document.getElementById('snow-container');
+            for (let i = 0; i < 70; i++) {
+                let flake = document.createElement('div');
+                flake.className = 'snowflake';
+                let size = (Math.random() * 5 + 2) + 'px';
+                flake.style.width = size; flake.style.height = size;
+                flake.style.left = (Math.random() * 100) + 'vw';
+                flake.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                flake.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(flake);
+            }
+        }
+        window.onload = createSnow;
+    </script>
+</body>
+</html>
